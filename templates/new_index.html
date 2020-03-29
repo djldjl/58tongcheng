@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block grid %}
+      <div class="ui equal width grid" style="margin:5px 0 5px 50px;width:70%" >
+          <div class="row">
+              <div class="column">
+                  <div class="ui red segment">
+                      <div class="ui statistic">
+                          <div class="value">{{ docs_num }}</div>
+                          <div class="label">Documents</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="column">
+                  <div class="ui blue segment">
+                      <div class="ui statistic">
+                          <div class="value">{{add_num}}</div>
+                          <div class="label">Yesterday Publish</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="row">
+              <div class="column">
+                  <div class="ui container segment">
+                      <div class ="ui divided items">
+                          {% for item in one_page_post %}
+                            <div class ="item">
+                              <div class="content">
+                                  <div class="ui header">{{ item.title }}</div>
+                                  <div class="description">
+                                      <p>
+                                          {{ item.price }}|{{ item.area }}|{{ item.title }}
+                                      </p>
+                                  </div>
+                                  <div class="extra">
+                                       {% for cate in item.cates %}
+                                          <div class="ui label">
+                                              {{ cate }}
+                                          </div>
+                                      {% endfor %}
+
+                                  </div>
+                              </div>
+                          </div>
+                          {% endfor %}
+                      </div>
+
+
+                      <div class="ui pagination menu">
+                          {% if one_page_post.has_previous %}
+                              <a class="item" href="?page={{ one_page_post.previous_page_number }}">
+                                <
+                              </a>
+                          {% else %}
+                              <a class="disabled item">
+                                <
+                              </a>
+                          {% endif %}
+                          <div class="disable item">
+                            {{ one_page_post.number }} of {{ one_page_post.paginator.num_pages }}
+                          </div>
+                          {% if one_page_post.has_next %}
+                              <a class="item" href="?page={{ one_page_post.next_page_number }}">
+                                >
+                              </a>
+                          {% else %}
+                              <a class="disabled item">
+                                >
+                              </a>
+                          {% endif %}
+
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+{% endblock %}
+
+

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>djl's DataAnalysis Web</title>
+    <link rel="stylesheet" href="{% static 'dist/semantic.css' %}">
+    <script src="{% static 'dist/jquery.min.js' %}"></script>
+    <script src="{% static 'dist/semantic.js' %}"></script>
+</head>
+<body>
+  <div class="ui thin visible left sidebar inverted vertical menu">
+    <div class="header item">
+      <img src="{% static 'images/logo2.png' %}">
+    </div>
+    <a class="item">
+       Doucuments
+       <i class="browser icon"></i>
+    </a>
+    <a class="item">
+      Charts
+        <i class="bar chart icon"></i>
+    </a>
+    <a class="item">
+      Others
+        <i class="idea icon"></i>
+    </a>
+  </div>
+
+  <div class="pusher">
+
+        <div class="ui menu">
+          <a class="item" id="menu">
+            Menu
+            <i class="content icon"></i>
+          </a>
+          <a class="item">
+            About Us
+          </a>
+          <a class="item">
+            Locations
+          </a>
+          <a class="item">
+            Others
+          </a>
+        </div>
+
+      <div class="ui container segment" style="width:85%; margin:5px 5px 5px 20px">
+          <div class ="ui divided items">
+              {% for item in one_page_post %}
+                <div class ="item">
+                  <div class="content">
+                      <div class="ui header">{{ item.title }}</div>
+                      <div class="description">
+                          <p>
+                              {{ item.price }}|{{ item.area }}|{{ item.title }}
+                          </p>
+                      </div>
+                      <div class="extra">
+                           {% for cate in item.cates %}
+                              <div class="ui label">
+                                  {{ cate }}
+                              </div>
+                          {% endfor %}
+
+                      </div>
+                  </div>
+              </div>
+              {% endfor %}
+          </div>
+
+
+          <div class="ui pagination menu">
+              {% if one_page_post.has_previous %}
+                  <a class="item" href="?page={{ one_page_post.previous_page_number }}">
+                    <
+                  </a>
+              {% else %}
+                  <a class="disabled item">
+                    <
+                  </a>
+              {% endif %}
+              <div class="disable item">
+                {{ one_page_post.number }} of {{ one_page_post.paginator.num_pages }}
+              </div>
+              {% if one_page_post.has_next %}
+                  <a class="item" href="?page={{ one_page_post.next_page_number }}">
+                    >
+                  </a>
+              {% else %}
+                  <a class="disabled item">
+                    >
+                  </a>
+              {% endif %}
+
+          </div>
+      </div>
+
+  </div>
+    <script>
+      $('#menu').click(function () {
+        $('.ui.sidebar').sidebar('toggle');
+      });
+    </script>
+</body>
+</html>

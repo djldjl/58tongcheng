@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>djl's DataAnalysis Web</title>
+    <link rel="stylesheet" href="{% static 'dist/semantic.css' %}">
+    <script src="{% static 'dist/jquery.min.js' %}"></script>
+    <script src="{% static 'dist/semantic.js' %}"></script>
+    <script src="{% static 'chartsjs/exporting.js' %}"></script>
+    <script src="{% static 'chartsjs/highcharts.js' %}"></script>
+    <script src="{% static 'chartsjs/highcharts-more.js' %}"></script>
+</head>
+<body>
+  <div class="ui thin visible left sidebar inverted vertical menu">
+    <div class="header item">
+      <img src="{% static 'images/logo2.png' %}">
+    </div>
+    <a class="item" href="{% url 'docs' %}">
+       Documents
+       <i class="browser icon"></i>
+    </a>
+    <a class="item" href="{% url 'charts' %}">
+      Charts
+        <i class="bar chart icon"></i>
+    </a>
+    <a class="item" href="{% url 'docs' %}">
+      Others
+        <i class="idea icon"></i>
+    </a>
+  </div>
+
+  <div class="pusher">
+
+      <div class="ui menu">
+          <a class="item" id="menu">
+            Menu
+            <i class="content icon"></i>
+          </a>
+          <a class="item">
+            About Us
+          </a>
+          <a class="item">
+            Locations
+          </a>
+          <a class="item">
+            Others
+          </a>
+        </div>
+
+    {% block grid %}{% endblock %}
+
+  </div>
+<!--    <script>-->
+<!--      $('#menu').click(function () {-->
+<!--        $('.ui.sidebar').sidebar('toggle');-->
+<!--      });-->
+<!--    </script>-->
+
+     {% block chartjs %}{% endblock %}
+
+</body>
+
+
+</html>

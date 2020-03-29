@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+
+{% block grid %}
+
+<div class="ui equal width grid" style="margin:5px 0 5px 50px;width:70%">
+{#  ------------------------------------------------ CHART BLOCK ---------------------------------------------------  #}
+    <div class="row">
+      <div class="column">
+        <div class="ui container segment">    <!-- 这层容器让div看起来更有立体感 -->
+          <div class="ui container" id="chart1"></div>     <!-- 这层容器必须有，否则图像显示不出来，以下图像同理 -->
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column">
+        <div class="ui container segment">
+             <div class="ui container" id="pie1"></div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="ui container segment">
+             <div class="ui container" id="pie2"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column">
+        <div class="ui container segment">
+              <div class="ui selection dropdown">
+                  <input type="hidden" name="Area">         <!-- 这句不要好像也可以 -->
+                  <i class="dropdown icon"></i>
+                  <div class="default text">请选择地区</div>
+                  <div class="menu">
+                    <div class="item" id="CY">朝阳</div>
+                    <div class="item" id="HD">海淀</div>
+                    <div class="item" id="TZ">通州</div>
+                  </div>
+              </div>
+
+<!--                <div class="ui simple dropdown item">-->   <!-- 这么写不调用js也可以 -->
+<!--                  Area-->
+<!--                  <i class="dropdown icon"></i>-->
+<!--                  <div class="menu">-->
+<!--                    <div class="item" id="CY">朝阳</div>-->
+<!--                    <div class="item" id="HD">海淀</div>-->
+<!--                    <div class="item" id="TZ">通州</div>-->
+<!--                  </div>-->
+<!--                </div>-->
+
+          <div class="ui container" id="chart4"></div>
+        </div>
+      </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block chartjs %}
+
+{#  ------------------------------------------------ SCRIPT BLOCK --------------------------------------------------  #}
+    <script>
+    <!-- 画出chart1:各品类发帖总量柱状图 -->
+    $(function () {
+        $('#chart1').highcharts({
+            credits:{
+                enabled:false       <!-- 去右下角的水印 -->
+            },
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '各品类发帖总量柱状图'
+            },
+            xAxis: {
+                type: 'category'       <!-- X轴刻度规定 -->
+            },
+            yAxis: {
+                title: {
+                    text: '发帖量'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+
+            series: [{
+                name: 'post',
+                colorByPoint: true,
+                data: {{ series_post|safe }}     <!-- safe可去掉怪异的编码字符 -->
+            }]
+        });
+    });
+    </script>
+
+    <script>
+    <!-- 画出pie1:一天内成交物品种类分布图 -->
+    $(function () {
+        $('#pie1').highcharts({
+            credits:{
+                enabled:false       <!-- 去右下角的水印 -->
+            },
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: '一天内成交物品种类分布'
+            },
+            tooltip: {      <!-- 鼠标浮动在饼图上时，显示百分占比，精确到1位小数，如：北京二手家电 percent:21.5% -->
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>  数量:<b>{point.y}</b>'
+            },                      <!-- 除了百分比，还可以显示数量，如上句 -->
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true
+                    },
+                    showInLegend: false
+                }
+            },
+            series: [{
+                name: '百分比',
+                colorByPoint: true,
+                data: {{ pie1_data|safe }}    <!-- safe可去掉怪异的编码字符 -->
+            }]
+        });
+    });
+    </script>
+
+    <script>
+    <!-- 画出pie2:一天内成交物品地区分布图 -->
+    $(function () {
+        $('#pie2').highcharts({
+            credits:{
+                enabled:false       <!-- 去右下角的水印 -->
+            },
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: '一天内成交物品地区分布'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                name: 'Percent',
+                colorByPoint: true,
+                data: {{ pie2_data|safe }}
+            }]
+        });
+    });
+    </script>
+
+
+
+<script>
+<!--    $(document).ready(function(){-->       <!-- 这么写也可以，下面那样写更简单 -->
+<!--        $('.ui.dropdown').dropdown();-->
+<!--    });-->
+
+    $(function(){
+        $('.ui.selection.dropdown').dropdown();
+    });
+</script>
+
+<script>
+    <!-- 画出chart4默认的图表：朝阳地区类目top3 -->
+    $(function () {
+        $('#chart4').highcharts({
+            credits:{
+                enabled:false       <!-- 去右下角的水印 -->
+            },
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '朝阳热销类目Top3'
+            },
+            xAxis: {
+                type: 'category'       <!-- X轴刻度规定 -->
+            },
+            yAxis: {
+                title: {
+                    text: '发帖量'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+
+            series: [{
+                name: '数量',
+                colorByPoint: true,
+                data: {{ chaoyang_top3|safe }}     <!-- safe可去掉怪异的编码字符 -->
+            }]
+        });
+    });
+    </script>
+
+<script>
+    <!-- 画出chart4其中的朝阳地区类目top3 -->
+    $('#CY').click(function () {
+        $('#chart4').highcharts({
+            credits:{
+                enabled:false       <!-- 去右下角的水印 -->
+            },
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '朝阳热销类目Top3'
+            },
+            xAxis: {
+                type: 'category'       <!-- X轴刻度规定 -->
+            },
+            yAxis: {
+                title: {
+                    text: '发帖量'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+
+            series: [{
+                name: '数量',
+                colorByPoint: true,
+                data: {{ chaoyang_top3|safe }}     <!-- safe可去掉怪异的编码字符 -->
+            }]
+        });
+    });
+    </script>
+<script>
+    <!-- 画出chart4其中的海淀地区类目top3 -->
+    $('#HD').click(function () {
+        $('#chart4').highcharts({
+            credits:{
+                enabled:false       <!-- 去右下角的水印 -->
+            },
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '海淀热销类目Top3'
+            },
+            xAxis: {
+                type: 'category'       <!-- X轴刻度规定 -->
+            },
+            yAxis: {
+                title: {
+                    text: '发帖量'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+
+            series: [{
+                name: 'post',
+                colorByPoint: true,
+                data: {{ haidian_top3|safe }}     <!-- safe可去掉怪异的编码字符 -->
+            }]
+        });
+    });
+    </script>
+<script>
+    <!-- 画出chart4其中的通州地区类目top3 -->
+    $('#TZ').click(function () {
+        $('#chart4').highcharts({
+            credits:{
+                enabled:false       <!-- 去右下角的水印 -->
+            },
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '通州热销类目Top3'
+            },
+            xAxis: {
+                type: 'category'       <!-- X轴刻度规定 -->
+            },
+            yAxis: {
+                title: {
+                    text: '发帖量'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+
+            series: [{
+                name: 'post',
+                colorByPoint: true,
+                data: {{ tongzhou_top3|safe }}     <!-- safe可去掉怪异的编码字符 -->
+            }]
+        });
+    });
+    </script>
+
+
+
+
+{% endblock %}
